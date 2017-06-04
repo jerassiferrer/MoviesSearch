@@ -10,9 +10,6 @@ import com.google.gson.annotations.SerializedName;
 import com.orm.SugarRecord;
 import com.orm.dsl.Table;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Table
 public class Result {
 

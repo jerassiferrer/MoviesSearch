@@ -3,7 +3,7 @@ package com.mobile.jera.moviessearch.adapters;
 /**
  * Created by jera on 6/1/17.
  */
-import android.content.Context;
+
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

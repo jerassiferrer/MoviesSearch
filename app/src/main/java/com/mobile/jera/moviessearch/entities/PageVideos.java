@@ -8,7 +8,6 @@ package com.mobile.jera.moviessearch.entities;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.orm.SugarRecord;
-
 import java.util.ArrayList;
 import java.util.List;
 

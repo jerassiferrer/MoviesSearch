@@ -161,7 +161,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void handleIntent(Intent intent) {
-
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             if (isNumeric(query))
@@ -221,7 +220,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void fetchContent() {
         Log.i("MYTAG", "fetch content");
-        // If we have internet we fetch information from the REST service
         if (valueSet(show_favorites)) {
             Log.i("MYTAG", "show favorites");
             FetchFavoritesTask mytask = new FetchFavoritesTask();
@@ -236,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
                     String.valueOf(page),
                     language,
                     getResources().getString(R.string.API_JSON_URL));
-        } else { // if no internet, we try to load info from our database*/
+        } else {
             Log.i("MYTAG", "fetch offline");
             FetchMoviesOfflineTask mytask = new FetchMoviesOfflineTask();
             mytask.execute(
@@ -262,7 +260,6 @@ public class MainActivity extends AppCompatActivity {
         res2.setAdult(res1.getAdult());
         res2.setOverview(res1.getOverview());
         res2.setReleaseDate(res1.getReleaseDate());
-        //res2.setGenreIds(res1.getGenreIds());
         res2.setOriginalTitle(res1.getOriginalTitle());
         res2.setOriginalLanguage(res1.getOriginalLanguage());
         res2.setTitle(res1.getTitle());
@@ -282,12 +279,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private class FetchMoviesOfflineTask extends AsyncTask<String, Integer, List<Result>> {
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
         }
-
         @Override
         protected void onPostExecute(List<Result> resultstask) {
             super.onPostExecute(resultstask);
@@ -341,17 +336,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private class FetchMoviesOnlineTask extends AsyncTask<String, Integer, List<Result>> {
-
         @Override
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
         }
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
         }
-
         @Override
         protected void onPostExecute(List<Result> resultstask) {
             super.onPostExecute(resultstask);
@@ -370,7 +362,6 @@ public class MainActivity extends AppCompatActivity {
                         adapter.notifyDataSetChanged();
                     }
                     for (Result res1 : resultstask) {
-                        // List<Result> res2 = Result.find(Result.class, "id = ?", res1.getId().toString());
                         List<Result> res2 = SugarRecord.find(Result.class, "id = ?", res1.getId().toString());
                         if (res2.size()==0) {
                             SugarRecord.save(res1);
@@ -486,9 +477,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected List<Result> doInBackground(String... params) {
-
             List<Result> resultstask = new ArrayList<>();
-
             return resultstask;
         }
     }
