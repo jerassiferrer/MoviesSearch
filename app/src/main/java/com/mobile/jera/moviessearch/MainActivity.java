@@ -6,15 +6,12 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -26,7 +23,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.mobile.jera.moviessearch.R;
 import com.mobile.jera.moviessearch.adapters.RVResultsAdapter;
 import com.mobile.jera.moviessearch.entities.PageResults;
 import com.mobile.jera.moviessearch.entities.Result;
@@ -35,8 +31,6 @@ import com.mobile.jera.moviessearch.listeners.RecyclerItemClickListener;
 import com.mobile.jera.moviessearch.retrofit.RetrofitInterface;
 import com.mobile.jera.moviessearch.ui.DetailActivity;
 import com.orm.SugarRecord;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import java.util.ArrayList;
 import java.util.List;
 import retrofit2.Call;
@@ -46,9 +40,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity {
 
     public static String API_JSON_URL, API_IMAGES_URL, API_KEY;
-    String RESTAG = "RESTAG";
     RecyclerView recyclerView;
-    LinearLayoutManager llm;
     RVResultsAdapter adapter;
     Context context;
     StaggeredGridLayoutManager staggeredGridLayoutManager;
@@ -63,20 +55,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-
         context = this;
-        Log.i("MYTAG", "oncreate activity resultsaactivity");
-
-        // Set icon in toolbar
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayUseLogoEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
-
         API_KEY = getResources().getString(R.string.API_KEY);
         API_JSON_URL = getResources().getString(R.string.API_JSON_URL);
         API_IMAGES_URL = getResources().getString(R.string.API_IMAGES_URL);
-
         if (savedInstanceState != null) {
             search_title = savedInstanceState.getString("search_title");
             search_year = savedInstanceState.getString("search_year");
@@ -85,8 +70,6 @@ public class MainActivity extends AppCompatActivity {
         }
         columns = getSupportedColumns();
         language = getResources().getString(R.string.language);
-
-        // Recycler View in ResultsFragment
         recyclerView = (RecyclerView) findViewById(R.id.recycler_list_results);
         recyclerView.setHasFixedSize(true);
         staggeredGridLayoutManager = new StaggeredGridLayoutManager(columns, 1);
@@ -98,13 +81,11 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setOnScrollListener(new EndlessRecyclerOnScrollListener(staggeredGridLayoutManager) {
             @Override
             public void onLoadMore(int current_page) {
-                // do something...
                 if (!loading) {
                     loading = true;
                     page++;
                     if (isNetworkAvailable()) {
                         fetchContent();
-                        //Toast.makeText(context, "Loading page " + page, Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -122,7 +103,6 @@ public class MainActivity extends AppCompatActivity {
             public void onItemLongClick(View view, int position) {
             }
         }));
-        // fetch movies for the first page
         handleIntent(getIntent());
         fetchContent();
     }
@@ -135,15 +115,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             super.onBackPressed();
         }
-    }
-
-    public void restartVariables() {
-        search_title = "";
-        search_year = "";
-        show_favorites = "";
-        show_upcoming = "";
-        page = 1;
-        adapter = null;
     }
 
     @Override
@@ -178,20 +149,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            /*case R.id.favorites:
-                Log.i("MYTAG", "display favorites");
-                displayFavorites();
-                return true;*/
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    public void displayFavorites() {
-        Intent i = new Intent(this, MainActivity.class);
-        i.putExtra("show_favorites", "favorites");
-        startActivity(i);
-    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -207,7 +169,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreateOptionsMenu(menu);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.home_menu, menu);
-        // Associate searchable configuration with the SearchView
         SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView =
@@ -219,13 +180,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void fetchContent() {
-        Log.i("MYTAG", "fetch content");
         if (valueSet(show_favorites)) {
-            Log.i("MYTAG", "show favorites");
             FetchFavoritesTask mytask = new FetchFavoritesTask();
             mytask.execute();
         } else if (isNetworkAvailable()) {
-            Log.i("MYTAG", "fetch online");
             FetchMoviesOnlineTask mytask = new FetchMoviesOnlineTask();
             mytask.execute(
                     search_title,

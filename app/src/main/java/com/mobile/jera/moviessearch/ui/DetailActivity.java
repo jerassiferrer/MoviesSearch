@@ -84,9 +84,14 @@ public class DetailActivity extends AppCompatActivity  {
 
     public void initDetails() {
         result_id = getIntent().getExtras().getString("result_id");
-        List<Result> results = SugarRecord.find(Result.class, "id = ?", result_id);
-        if (results.size()>0) {
-            displayDetails(results.get(0));
+        try {
+            List<Result> results = SugarRecord.find(Result.class, "id = ?", result_id);
+            if (results.size() > 0) {
+                displayDetails(results.get(0));
+            }
+        } catch (Exception e){
+            Log.e("MYTAG", "Error getting results "+e.getMessage());
+            e.printStackTrace();
         }
     }
 
